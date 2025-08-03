@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const getUser = async () => {
-  const res = await axios.get("http://localhost:8000/api/auth/me", {
+  const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/auth/me`, {
     withCredentials: true,
   });
   return res.data.user;         
@@ -9,7 +9,7 @@ export const getUser = async () => {
 
 export const logout = async () => {
   await axios.post(
-    "http://localhost:8000/api/auth/logout",
+    `${import.meta.env.VITE_BACKEND_URL}/api/auth/logout`,
     {},
     { withCredentials: true }
   );

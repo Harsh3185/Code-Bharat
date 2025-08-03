@@ -33,7 +33,7 @@ function ProblemPage() {
   const handleDelete = async () => {
     if (!window.confirm("Delete this problem?")) return;
     try {
-      await axios.post(`http://localhost:8000/api/problem/${problemId}`, {}, { withCredentials: true });
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/problem/${problemId}`, {}, { withCredentials: true });
       navigate("/problems");
     } catch {
       alert("Delete failed");
@@ -44,7 +44,7 @@ function ProblemPage() {
     setLoading(true);
     setOutput("");
     try {
-      const { data } = await axios.post("http://localhost:7000/run", {
+      const { data } = await axios.post(`${import.meta.env.VITE_COMPILER_URL}/run`, {
         code,
         language,
         input,
@@ -63,7 +63,7 @@ function ProblemPage() {
     setOutput("");
     try {
       const { data } = await axios.post(
-        `http://localhost:8000/api/problem/${problem._id}/submit`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/problem/${problem._id}/submit`,
         { code, language },
         { withCredentials: true }
       );
@@ -80,7 +80,7 @@ function ProblemPage() {
     setReview("");
     setReviewLoading(true);
     try {
-      const { data } = await axios.post("http://localhost:7000/ai-review", { code });
+      const { data } = await axios.post(`${import.meta.env.VITE_COMPILER_URL}/ai-review`, { code });
       setReview(data.review);
     } catch (err) {
       setReview("AI review failed");
@@ -238,7 +238,7 @@ export default ProblemPage;
 
 export const ProblemLoader = async ({ params }) => {
   const { problemId } = params;
-  const res = await axios.get(`http://localhost:8000/api/problem/${problemId}`, {
+  const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/problem/${problemId}`, {
     withCredentials: true,
   });
   return { problem: res.data };

@@ -23,7 +23,7 @@ export default function RegisterPage() {
     (async () => {
       try {
         await axios.post(
-          "http://localhost:8000/api/auth/register",
+          `${import.meta.env.VITE_BACKEND_URL}/api//auth/register`,
           { ...formFields, role: formFields.role.toUpperCase() },
           { withCredentials: true }
         );

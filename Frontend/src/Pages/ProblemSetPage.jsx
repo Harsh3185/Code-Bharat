@@ -72,7 +72,7 @@ function ProblemSetPage() {
 export default ProblemSetPage;
 
 export const problemSetLoader = async () => {
-  const res = await axios.get('http://localhost:8000/api/problems', {
+  const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/problems`, {
     withCredentials: true
   });
   return { problems: res.data.problems };

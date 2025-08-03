@@ -23,7 +23,7 @@ export default function LoginPage() {
     (async () => {
       try {
         await axios.post(
-          "http://localhost:8000/api/auth/login",
+          `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
           { ...formFields, role: formFields.role.toUpperCase() },
           { withCredentials: true }
         );

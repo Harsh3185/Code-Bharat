@@ -9,7 +9,7 @@ export default function useAuth() {
     (async () => {
       try {
         const res = await axios.post(
-          'http://localhost:8000/api/auth/me',
+          `${import.meta.env.VITE_BACKEND_URL}/api/auth/me`,
           {},
           { withCredentials: true }
         );
