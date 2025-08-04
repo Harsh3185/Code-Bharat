@@ -14,12 +14,12 @@ export default function ProfilePage() {
   useEffect(() => {
     (async () => {
       try {
-        const profileRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/auth/profile`, {
+        const profileRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/profile`, {
           withCredentials: true
         });
         setUser(profileRes.data.user);
 
-        const subsRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/auth/submissions`, {
+        const subsRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/submissions`, {
           withCredentials: true
         });
         setSubmissions(subsRes.data.submissions);
