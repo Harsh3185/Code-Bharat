@@ -61,7 +61,7 @@ function AdminAddProblemPage() {
         { withCredentials: true }
       );
 
-      alert("Problem and test-cases added 🎉");
+      alert("Problem and test-cases added successfully");
       navigate("/problems");
     } catch (err) {
       const msg = err?.response?.data?.message || "Add failed";
