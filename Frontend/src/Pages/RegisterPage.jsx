@@ -73,7 +73,7 @@ export default function RegisterPage() {
           <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="userName" className="block mb-1 text-sm font-medium">First Name</label>
+                <label htmlFor="userName" className="block mb-1 text-sm font-medium">User Name</label>
                 <input
                   id="userName"
                   name="userName"
