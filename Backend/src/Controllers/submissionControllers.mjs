@@ -47,22 +47,28 @@ export const submitSolution = async (req, res) => {
 
     let passed = 0;
 
+    const compilerUrl = process.env.COMPILER_SERVICE_URL || "http://localhost:7000";
+
     for (const tc of testCases) {
       try {
-        const runRes = await axios.post("http://localhost:7000/run", {
-          code,
-          language,
-          input: tc.input
-        }, {
-          timeout: 10000
-        });
+        const runRes = await axios.post(
+          `${compilerUrl}/run`,
+          {
+            code,
+            language,
+            input: tc.input,
+          },
+          {
+            timeout: 10000,
+          }
+        );
 
         const actual = normalize(runRes.data.output);
         const expected = normalize(tc.output);
 
         if (actual === expected) passed++;
       } catch (err) {
-        console.error(`❌ Test case failed for input: ${tc.input}`);
+        console.error(`Test case failed for input: ${tc.input}`);
         console.error(err.message || err);
         return res.status(500).json({ message: "Error while running test cases", error: err.message });
       }
@@ -102,7 +108,7 @@ export const submitSolution = async (req, res) => {
     res.json({ status: submission.status });
 
   } catch (e) {
-    console.error("🔥 Backend error in submitSolution:");
+    console.error("Backend error in submitSolution:");
     console.dir(e, { depth: null });
     return res.status(500).json({ message: "Internal server error", error: e.message });
   }

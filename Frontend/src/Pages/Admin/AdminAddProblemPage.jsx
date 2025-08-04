@@ -49,14 +49,14 @@ function AdminAddProblemPage() {
       setSubmitting(true);
 
       const pRes = await axios.post(
-        "http://localhost:8000/api/problem",
+        `${import.meta.env.VITE_BACKEND_URL}/api/problem`,
         { ...form, examples },
         { withCredentials: true }
       );
       const problemId = pRes.data.problem._id;
 
       await axios.post(
-        `http://localhost:8000/api/testcases/${problemId}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/testcases/${problemId}`,
         { testCases },
         { withCredentials: true }
       );
