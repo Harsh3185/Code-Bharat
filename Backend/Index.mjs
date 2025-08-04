@@ -33,6 +33,10 @@ app.use(testCaseRouter);
 app.use(profileRouter); 
 app.use(submissionRouter); 
 
+app.get("/", (req, res) => {
+  res.json({ message: "Code Bharat Backend API is live 🚀" });
+});
+
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
