@@ -15,7 +15,11 @@ const app = express();
 DBConnection();
 
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: [
+    "http://localhost:5173",
+    "https://code-bharat-one.vercel.app",
+    "https://jatsamajdirectory.com" 
+  ],
   credentials: true
 }));
 
