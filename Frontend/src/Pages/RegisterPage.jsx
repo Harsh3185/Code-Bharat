@@ -6,7 +6,7 @@ import mesh from "../assets/mesh.png";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
-  const [formFields, setFormFields] = useState({ firstName: "", lastName: "", email: "", password: "", role: "" });
+  const [formFields, setFormFields] = useState({ userName: "", email: "", password: "", role: "" });
   const [submit, setSubmit] = useState(false);
   const [formError, setFormError] = useState("");
   const [hasSubmitted, setHasSubmitted] = useState(false);
@@ -14,8 +14,8 @@ export default function RegisterPage() {
   useEffect(() => {
     if (!submit) return;
     setHasSubmitted(true);
-    const { firstName, lastName, email, password, role } = formFields;
-    if (!firstName || !lastName || !email || !password || !role) {
+    const { userName, email, password, role } = formFields;
+    if (!userName || !email || !password || !role) {
       setFormError("Please fill all the required fields.");
       setSubmit(false);
       return;
@@ -73,23 +73,13 @@ export default function RegisterPage() {
           <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="firstName" className="block mb-1 text-sm font-medium">First Name</label>
+                <label htmlFor="userName" className="block mb-1 text-sm font-medium">First Name</label>
                 <input
-                  id="firstName"
-                  name="firstName"
+                  id="userName"
+                  name="userName"
                   type="text"
                   className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                  onChange={(e) => setFormFields((p) => ({ ...p, firstName: e.target.value }))}
-                />
-              </div>
-              <div>
-                <label htmlFor="lastName" className="block mb-1 text-sm font-medium">Last Name</label>
-                <input
-                  id="lastName"
-                  name="lastName"
-                  type="text"
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                  onChange={(e) => setFormFields((p) => ({ ...p, lastName: e.target.value }))}
+                  onChange={(e) => setFormFields((p) => ({ ...p, userName: e.target.value }))}
                 />
               </div>
             </div>
