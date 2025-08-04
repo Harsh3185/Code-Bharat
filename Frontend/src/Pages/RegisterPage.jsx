@@ -71,17 +71,15 @@ export default function RegisterPage() {
           <h2 className="text-2xl font-semibold mb-6 text-center">Sign up</h2>
 
           <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="userName" className="block mb-1 text-sm font-medium">User Name</label>
-                <input
-                  id="userName"
-                  name="userName"
-                  type="text"
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                  onChange={(e) => setFormFields((p) => ({ ...p, userName: e.target.value }))}
-                />
-              </div>
+            <div>
+              <label htmlFor="userName" className="block mb-1 text-sm font-medium">User Name</label>
+              <input
+                id="userName"
+                name="userName"
+                type="text"
+                className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                onChange={(e) => setFormFields((p) => ({ ...p, userName: e.target.value }))}
+              />
             </div>
 
             <div>
