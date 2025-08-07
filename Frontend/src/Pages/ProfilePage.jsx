@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { logoutThunk } from "../Store/Features/Auth/authThunks.js";
-import SubmissionTable from "../components/SubmissionTable.jsx";
+import SubmissionTable from "./Submission.jsx";
 
 function Stat({ label, value }) {
   return (

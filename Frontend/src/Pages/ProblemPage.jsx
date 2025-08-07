@@ -6,7 +6,7 @@ import Split from "react-split";
 import Editor from "@monaco-editor/react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import SubmissionTable from "../components/SubmissionTable.jsx";
+import SubmissionTable from "./Submission.jsx";
 
 function ProblemPage() {
   const { problem } = useLoaderData();
