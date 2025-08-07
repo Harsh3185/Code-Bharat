@@ -1,9 +1,20 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-import { logoutThunk } from '../Store/Features/Auth/authThunks.js';
+import { logoutThunk } from "../Store/Features/Auth/authThunks.js";
+
+function Stat({ label, value }) {
+  return (
+    <div className="bg-[#1a1a1a] rounded-xl p-4 text-center shadow transition-all hover:-translate-y-1 hover:shadow-purple-600/40">
+      <p className="text-3xl font-extrabold text-white">{value}</p>
+      <p className="mt-1 text-xs font-semibold uppercase tracking-widest text-gray-400">
+        {label}
+      </p>
+    </div>
+  );
+}
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);
@@ -14,93 +25,137 @@ export default function ProfilePage() {
   useEffect(() => {
     (async () => {
       try {
-        const profileRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/profile`, {
-          withCredentials: true
-        });
+        const profileRes = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/profile`,
+          {
+            withCredentials: true,
+          }
+        );
         setUser(profileRes.data.user);
 
-        const subsRes = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/submissions`, {
-          withCredentials: true
-        });
+        const subsRes = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/submissions`,
+          {
+            withCredentials: true,
+          }
+        );
         setSubmissions(subsRes.data.submissions);
       } catch {
-        navigate('/login');
+        navigate("/login");
       }
     })();
   }, [navigate]);
 
   const handleLogout = () => {
     dispatch(logoutThunk());
-    navigate('/login');
+    navigate("/login");
   };
 
-  if (!user) return <div className="p-10 text-white">Loading…</div>;
+  if (!user)
+    return <div className="p-10 text-gray-300">Loading…</div>;
 
   return (
-    <div className="p-10 text-white max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Your Profile</h1>
+    <main className="min-h-screen bg-[#0f0f0f] px-4 py-10 text-gray-200">
+      <div className="mx-auto flex max-w-5xl flex-col space-y-10">
+        
+        <div className="flex flex-col items-center justify-between gap-6 rounded-3xl bg-[#151515] p-8 shadow-lg md:flex-row md:gap-0">
+          <div className="flex items-center gap-6">
+            <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 text-4xl font-extrabold">
+              {user.userName[0].toUpperCase()}
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-white">{user.userName}</h1>
+              <p className="text-sm text-gray-400">{user.email}</p>
+            </div>
+          </div>
 
-      <div className="space-y-3 text-lg">
-        <p><b>Username:</b> {user.userName}</p>
-        <p><b>Email:</b> {user.email}</p>
-        <p><b>Solved:</b> {user.problemsSolved.length}</p>
-        <p><b>Total Submissions:</b> {user.totalSubmissions}</p>
-        <p><b>Accepted Submissions:</b> {user.acceptedSubmissions}</p>
-        <p><b>Institution:</b> {user.institution || '—'}</p>
-        <p><b>Location:</b> {user.location || '—'}</p>
-        <p><b>Bio:</b> {user.bio || '—'}</p>
-      </div>
+          <button
+            onClick={handleLogout}
+            className="rounded-full bg-red-600 px-6 py-2 text-sm font-semibold transition-colors hover:bg-red-700"
+          >
+            Logout
+          </button>
+        </div>
 
-      <button
-        onClick={handleLogout}
-        className="mt-8 px-6 py-2 bg-red-600 hover:bg-red-700 rounded text-white font-semibold"
-      >
-        Logout
-      </button>
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <Stat label="Solved" value={user.problemsSolved.length} />
+          <Stat label="Submissions" value={user.totalSubmissions} />
+          <Stat label="Accepted" value={user.acceptedSubmissions} />
+          <Stat label="Acceptance %" value={(
+            (user.acceptedSubmissions / Math.max(user.totalSubmissions, 1)) *
+            100
+          ).toFixed(1)} />
+        </div>
 
-      {!!submissions.length && (
-        <div className="mt-10">
-          <h2 className="text-2xl font-semibold mb-4">Submission History</h2>
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-[#1f1f1f] rounded shadow">
-              <thead>
-                <tr className="bg-[#2a2a2a] text-left text-sm">
-                  <th className="py-2 px-4">#</th>
-                  <th className="py-2 px-4">Problem</th>
-                  <th className="py-2 px-4">Lang</th>
-                  <th className="py-2 px-4">Status</th>
-                  <th className="py-2 px-4">Time</th>
-                </tr>
-              </thead>
-              <tbody>
-                {submissions.map((s, i) => (
-                  <tr key={s._id} className="border-t border-gray-700 text-sm">
-                    <td className="py-2 px-4">{i + 1}</td>
-                    <td className="py-2 px-4">#{String(s.problemNumber).padStart(3, '0')}</td>
-                    <td className="py-2 px-4">{s.language}</td>
-                    <td className="py-2 px-4">
-                      <span
-                        className={
-                          s.status === 'Accepted'
-                            ? 'text-green-400'
-                            : s.status.includes('Wrong')
-                            ? 'text-yellow-400'
-                            : 'text-red-400'
-                        }
-                      >
-                        {s.status}
-                      </span>
-                    </td>
-                    <td className="py-2 px-4">
-                      {new Date(s.createdAt).toLocaleString()}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <div className="rounded-3xl bg-[#151515] p-6 shadow-lg">
+          <h2 className="mb-4 text-xl font-semibold text-white">About</h2>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <p>
+              <span className="font-semibold text-gray-400">Institution:</span>{" "}
+              {user.institution || "\u2014"}
+            </p>
+            <p>
+              <span className="font-semibold text-gray-400">Location:</span>{" "}
+              {user.location || "\u2014"}
+            </p>
+            <p className="sm:col-span-2">
+              <span className="font-semibold text-gray-400">Bio:</span>{" "}
+              {user.bio || "\u2014"}
+            </p>
           </div>
         </div>
-      )}
-    </div>
+
+        {!!submissions.length && (
+          <div className="rounded-3xl bg-[#151515] p-6 shadow-lg">
+            <h2 className="mb-4 text-xl font-semibold text-white">
+              Submission History
+            </h2>
+            <div className="overflow-x-auto rounded-xl">
+              <table className="min-w-full text-sm">
+                <thead>
+                  <tr className="bg-[#222] text-left text-gray-400">
+                    <th className="px-4 py-2 font-medium">#</th>
+                    <th className="px-4 py-2 font-medium">Problem</th>
+                    <th className="px-4 py-2 font-medium">Lang</th>
+                    <th className="px-4 py-2 font-medium">Status</th>
+                    <th className="px-4 py-2 font-medium">Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {submissions.map((s, i) => (
+                    <tr
+                      key={s._id}
+                      className="border-t border-[#2a2a2a] hover:bg-[#1f1f1f]"
+                    >
+                      <td className="px-4 py-2">{i + 1}</td>
+                      <td className="px-4 py-2">
+                        #{String(s.problemNumber).padStart(3, "0")}
+                      </td>
+                      <td className="px-4 py-2">{s.language}</td>
+                      <td className="px-4 py-2">
+                        <span
+                          className={
+                            s.status === "Accepted"
+                              ? "rounded-full bg-green-600/20 px-3 py-1 text-green-400"
+                              : s.status.includes("Wrong")
+                              ? "rounded-full bg-yellow-600/20 px-3 py-1 text-yellow-400"
+                              : "rounded-full bg-red-600/20 px-3 py-1 text-red-400"
+                          }
+                        >
+                          {s.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-2">
+                        {new Date(s.createdAt).toLocaleString()}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </div>
+    </main>
   );
 }
