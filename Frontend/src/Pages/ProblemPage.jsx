@@ -6,6 +6,7 @@ import Split from "react-split";
 import Editor from "@monaco-editor/react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { redirect } from "react-router-dom";
 
 function ProblemPage() {
   const { problem } = useLoaderData();
@@ -237,9 +238,17 @@ function ProblemPage() {
 export default ProblemPage;
 
 export const ProblemLoader = async ({ params }) => {
-  const { problemId } = params;
-  const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/problem/${problemId}`, {
-    withCredentials: true,
-  });
-  return { problem: res.data };
+  try {
+    const { problemId } = params;
+    const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/problem/${problemId}`, {
+      withCredentials: true,
+    });
+    return { problem: res.data };
+  } catch (err) {
+    if (err.response?.status === 401) {
+      return redirect("/login");
+    } else {
+      throw new Response("Problem not found", { status: 404 });
+    }
+  }
 };

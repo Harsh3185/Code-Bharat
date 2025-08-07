@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useSelector } from "react-redux";
 import mesh from "../assets/mesh.png";
 
 export default function HomePage() {
+  const { user } = useSelector((state) => state.auth);
+
   return (
     <main className="relative min-h-screen bg-gradient-to-br from-[#f8f8f8] via-[#f4f4f4] to-[#fdfdfd] text-black overflow-hidden">
-      
       <motion.img
         src={mesh}
         alt="mesh texture"
@@ -62,11 +64,18 @@ export default function HomePage() {
                 Start&nbsp;Practicing
               </button>
             </Link>
-            <Link to="/register">
-              <button className="px-6 py-3 rounded-md bg-black text-white font-medium hover:bg-gray-900 transition duration-200 shadow-sm hover:shadow-md">
-                Join&nbsp;Now&nbsp;→
-              </button>
-            </Link>
+
+            {!user ? (
+              <Link to="/register">
+                <button className="px-6 py-3 rounded-md bg-black text-white font-medium hover:bg-gray-900 transition duration-200 shadow-sm hover:shadow-md">
+                  Join&nbsp;Now&nbsp;→
+                </button>
+              </Link>
+            ) : (
+              <div className="text-right mt-2 text-lg font-semibold text-green-600">
+                Welcome, {user.name || user.username || "Coder"}!
+              </div>
+            )}
           </motion.div>
         </div>
       </div>
