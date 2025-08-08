@@ -103,17 +103,22 @@ export const submitSolution = async (req, res) => {
     }
     await user.save();
 
-    const submission = await Submission.create({
+    const submissionData = {
       userId: user._id,
       problemId: problem._id,
-      problemNumber: problem.problemNumber,
       language,
       code,
       input: testCases.map((tc) => tc.input).join("\n---\n"),
       output: testCases.map((tc) => tc.output).join("\n---\n"),
       status: isAccepted ? "Accepted" : "Wrong Answer",
       executionTime: "N/A",
-    });
+    };
+
+    if (problem.problemNumber != null) {
+      submissionData.problemNumber = problem.problemNumber;
+    }
+
+    const submission = await Submission.create(submissionData);
 
     res.json({ status: submission.status });
   } catch (e) {

@@ -15,6 +15,10 @@ const submissionSchema = new mongoose.Schema({
     ref: "Problem",
     required: true
   },
+  problemNumber: {
+    type: Number,
+    required: true
+  }, 
   language: {
     type: String,
     required: true

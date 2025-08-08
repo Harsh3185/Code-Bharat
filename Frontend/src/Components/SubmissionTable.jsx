@@ -21,7 +21,11 @@ export default function SubmissionTable({ submissions = [] }) {
               <td className="px-4 py-2">{i + 1}</td>
               <td className="px-4 py-2">
                 <Link to={`/problems/${s.problemId}`} className="hover:underline">
-                  #{String(s.problemNumber).padStart(3, "0")}
+                 #{
+                    s.problemNumber != null
+                      ? String(s.problemNumber).padStart(3, "0")
+                      : "???"
+                  }
                 </Link>
               </td>
               <td className="px-4 py-2">{s.language}</td>
