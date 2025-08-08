@@ -91,7 +91,7 @@ export const submitSolution = async (req, res) => {
       (problem.acceptance / problem.totalSubmissions) * 100;
     await problem.save();
 
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user._id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
     user.totalSubmissions++;
