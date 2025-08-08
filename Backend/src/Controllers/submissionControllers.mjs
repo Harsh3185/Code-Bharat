@@ -97,7 +97,10 @@ export const submitSolution = async (req, res) => {
     user.totalSubmissions++;
     if (isAccepted) {
       user.acceptedSubmissions++;
-      if (!user.problemsSolved.includes(problem.problemNumber)) {
+      if (
+        problem.problemNumber != null &&
+        !user.problemsSolved.includes(problem.problemNumber)
+      ) {
         user.problemsSolved.push(problem.problemNumber);
       }
     }
