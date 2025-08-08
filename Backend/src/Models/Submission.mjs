@@ -17,7 +17,7 @@ const submissionSchema = new mongoose.Schema({
   },
   problemNumber: {
     type: Number,
-    required: true
+    required: false
   }, 
   language: {
     type: String,
