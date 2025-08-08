@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { logoutThunk } from "../Store/Features/Auth/authThunks.js";
-import SubmissionTable from "./Submission.jsx";
+import SubmissionTable from "../Components/SubmissionTable.jsx";
 
 function Stat({ label, value }) {
   return (
@@ -21,23 +21,30 @@ export default function ProfilePage() {
   const d = useDispatch();
   const n = useNavigate();
 
+  const h = () => {
+    d(logoutThunk());
+    n("/login");
+  };
+
   useEffect(() => {
     (async () => {
       try {
-        const pr = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/profile`, { withCredentials: true });
+        const pr = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/profile`,
+          { withCredentials: true }
+        );
         su(pr.data.user);
-        const sr = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/submissions`, { withCredentials: true });
+
+        const sr = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/submissions`,
+          { withCredentials: true }
+        );
         ss(sr.data.submissions);
       } catch {
         n("/login");
       }
     })();
   }, [n]);
-
-  const h = () => {
-    d(logoutThunk());
-    n("/login");
-  };
 
   if (!u) return <div className="p-10 text-gray-300">Loading…</div>;
 
@@ -54,22 +61,42 @@ export default function ProfilePage() {
               <p className="text-sm text-gray-400">{u.email}</p>
             </div>
           </div>
-          <button onClick={h} className="rounded-full bg-red-600 px-6 py-2 text-sm font-semibold transition-colors hover:bg-red-700">Logout</button>
+          <button
+            onClick={h}
+            className="rounded-full bg-red-600 px-6 py-2 text-sm font-semibold transition-colors hover:bg-red-700"
+          >
+            Logout
+          </button>
         </div>
+
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           <Stat label="Solved" value={u.problemsSolved.length} />
           <Stat label="Submissions" value={u.totalSubmissions} />
           <Stat label="Accepted" value={u.acceptedSubmissions} />
-          <Stat label="Acceptance %" value={((u.acceptedSubmissions / Math.max(u.totalSubmissions, 1)) * 100).toFixed(1)} />
+          <Stat
+            label="Acceptance %"
+            value={((u.acceptedSubmissions / Math.max(u.totalSubmissions, 1)) * 100).toFixed(1)}
+          />
         </div>
+
         <div className="rounded-3xl bg-[#151515] p-6 shadow-lg">
           <h2 className="mb-4 text-xl font-semibold text-white">About</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <p><span className="font-semibold text-gray-400">Institution:</span> {u.institution || "\u2014"}</p>
-            <p><span className="font-semibold text-gray-400">Location:</span> {u.location || "\u2014"}</p>
-            <p className="sm:col-span-2"><span className="font-semibold text-gray-400">Bio:</span> {u.bio || "\u2014"}</p>
+            <p>
+              <span className="font-semibold text-gray-400">Institution:</span>{" "}
+              {u.institution || "\u2014"}
+            </p>
+            <p>
+              <span className="font-semibold text-gray-400">Location:</span>{" "}
+              {u.location || "\u2014"}
+            </p>
+            <p className="sm:col-span-2">
+              <span className="font-semibold text-gray-400">Bio:</span>{" "}
+              {u.bio || "\u2014"}
+            </p>
           </div>
         </div>
+
         {!!s.length && (
           <div className="rounded-3xl bg-[#151515] p-6 shadow-lg space-y-4">
             <h2 className="text-xl font-semibold text-white">Submission History</h2>

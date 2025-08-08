@@ -20,7 +20,7 @@ export default function SubmissionTable({ submissions = [] }) {
             <tr key={s._id} className="border-t border-[#2a2a2a] hover:bg-[#1f1f1f]">
               <td className="px-4 py-2">{i + 1}</td>
               <td className="px-4 py-2">
-                <Link to={`/problem/${s.problemId}`} className="hover:underline">
+                <Link to={`/problems/${s.problemId}`} className="hover:underline">
                   #{String(s.problemNumber).padStart(3, "0")}
                 </Link>
               </td>
