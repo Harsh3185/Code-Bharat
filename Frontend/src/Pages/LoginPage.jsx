@@ -24,7 +24,7 @@ export default function LoginPage() {
       try {
         await axios.post(
           `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
-          { ...formFields, role: formFields.role.toUpperCase() },
+          { ...formFields },
           { withCredentials: true }
         );
         setFormError("");
@@ -100,7 +100,7 @@ export default function LoginPage() {
                 name="role"
                 className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
                 onChange={(e) =>
-                  setFormFields((p) => ({ ...p, role: e.target.value.toUpperCase() }))
+                  setFormFields((p) => ({ ...p, role: e.target.value }))
                 }
               >
                 <option value="">Select role</option>

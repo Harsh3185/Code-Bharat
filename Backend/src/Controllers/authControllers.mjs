@@ -12,12 +12,15 @@ export const register = async (req, res) => {
 
     try {
         const data = matchedData(req, { includeOptionals: true });
-        const { password, ...restData } = data;
+        let { password, role, ...restData } = data;
+
+        if (role) role = role.toLowerCase();
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const user = await User.create({
             ...restData,
+            role,
             password: hashedPassword
         })
 
