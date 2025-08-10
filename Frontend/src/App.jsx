@@ -1,15 +1,8 @@
 import React from "react";
-import {
-  createBrowserRouter,
-  createRoutesFromElements,
-  Route,
-  RouterProvider,
-} from "react-router-dom";
-
+import {createBrowserRouter,createRoutesFromElements,Route,RouterProvider,} from "react-router-dom";
 import RootLayout from "./Layouts/RootLayout.jsx";
 import ProblemLayout from "./Layouts/ProblemLayout.jsx";
 import LoginLayout from "./Layouts/LoginLayout.jsx";
-
 import HomePage from "./Pages/HomePage.jsx";
 import ProfilePage from "./Pages/ProfilePage.jsx";
 import ContestsPage from "./Pages/ContestsPage.jsx";

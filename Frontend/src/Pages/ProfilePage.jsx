@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
 import { logoutThunk } from "../Store/Features/Auth/authThunks.js";
 import SubmissionTable from "../Components/SubmissionTable.jsx";
 

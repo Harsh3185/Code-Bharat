@@ -1,10 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  useLoaderData,
-  useNavigate,
-  useParams,
-  redirect,
-} from "react-router-dom";
+import { useLoaderData, useNavigate, useParams, redirect } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import Split from "react-split";
