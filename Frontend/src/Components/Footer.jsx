@@ -4,13 +4,13 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-sm">
         <p>© {new Date().getFullYear()} Code Bharat. All rights reserved.</p>
         <div className="flex gap-6 mt-4 md:mt-0">
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-white">
+          <a href="https://github.com/Harsh3185/Code-Bharat" target="_blank" rel="noopener noreferrer" className="hover:text-white">
             GitHub
           </a>
-          <a href="/about" className="hover:text-white">
+          <a href="https://harsh-choudhary-nine.vercel.app/" className="hover:text-white">
             About
           </a>
-          <a href="/contact" className="hover:text-white">
+          <a href="https://harsh-choudhary-nine.vercel.app/" className="hover:text-white">
             Contact
           </a>
         </div>
