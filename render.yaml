@@ -4,7 +4,7 @@ services:
     runtime: static
     plan: free
     rootDir: Frontend
-    buildCommand: npm ci && npm run build
+    buildCommand: npm install && npm run build
     staticPublishPath: Frontend/dist
     envVars:
       - key: VITE_BACKEND_URL
@@ -28,7 +28,7 @@ services:
     plan: free
     region: singapore
     rootDir: Backend
-    buildCommand: npm ci
+    buildCommand: npm install
     startCommand: npm start
     healthCheckPath: /
     envVars:
@@ -57,7 +57,7 @@ services:
     plan: free
     region: singapore
     rootDir: Compiler
-    buildCommand: npm ci
+    buildCommand: npm install
     startCommand: npm start
     healthCheckPath: /
     envVars:
