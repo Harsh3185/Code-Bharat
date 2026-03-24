@@ -13,6 +13,6 @@ router.get('/api/problem/:Id' , requireAuth , getProblem);
 
 router.post('/api/problem' , requireAuth , isAdmin , checkSchema(problemValidatingSchema) , addProblem);
 
-router.post('/api/problem/:Id' , requireAuth , isAdmin , deleteProblem);
+router.delete('/api/problem/:Id' , requireAuth , isAdmin , deleteProblem);
 
 export default router;

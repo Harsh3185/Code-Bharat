@@ -4,49 +4,51 @@ export default function SubmissionTable({ submissions = [] }) {
   if (!submissions.length) return null;
 
   return (
-    <div className="overflow-x-auto rounded-xl">
+    <div className="overflow-x-auto rounded-2xl border border-white/8">
       <table className="min-w-full text-sm">
-        <thead>
-          <tr className="bg-[#222] text-left text-gray-400">
-            <th className="px-4 py-2 font-medium">#</th>
-            <th className="px-4 py-2 font-medium">Problem</th>
-            <th className="px-4 py-2 font-medium">Lang</th>
-            <th className="px-4 py-2 font-medium">Status</th>
-            <th className="px-4 py-2 font-medium">Time</th>
+        <thead className="bg-[#12171d] text-left text-xs uppercase tracking-[0.2em] text-[#748597]">
+          <tr>
+            <th className="px-5 py-4 font-medium">#</th>
+            <th className="px-5 py-4 font-medium">Problem</th>
+            <th className="px-5 py-4 font-medium">Language</th>
+            <th className="px-5 py-4 font-medium">Status</th>
+            <th className="px-5 py-4 font-medium">Submitted</th>
           </tr>
         </thead>
-        <tbody>
-          {submissions.map((s, i) => (
-            <tr key={s._id} className="border-t border-[#2a2a2a] hover:bg-[#1f1f1f]">
-              <td className="px-4 py-2">{i + 1}</td>
-              <td className="px-4 py-2">
-                <Link to={`/problems/${s.problemId}`} className="hover:underline">
-                 #{
-                    s.problemNumber != null
-                      ? String(s.problemNumber).padStart(3, "0")
-                      : "???"
-                  }
+        <tbody className="divide-y divide-white/6">
+          {submissions.map((submission, index) => (
+            <tr key={submission._id} className="hover:bg-white/[0.03]">
+              <td className="px-5 py-4 font-mono text-[#b7c2cc]">{index + 1}</td>
+              <td className="px-5 py-4">
+                <Link
+                  to={`/problems/${submission.problemId}`}
+                  className="font-medium text-white transition hover:text-[#dbe6ef]"
+                >
+                  #
+                  {submission.problemNumber != null
+                    ? String(submission.problemNumber).padStart(3, "0")
+                    : "???"}
                 </Link>
               </td>
-              <td className="px-4 py-2">{s.language}</td>
-              <td className="px-4 py-2">
-                <span
-                  className={
-                    s.status === "Accepted"
-                      ? "rounded-full bg-green-600/20 px-3 py-1 text-green-400"
-                      : s.status.includes("Wrong")
-                      ? "rounded-full bg-yellow-600/20 px-3 py-1 text-yellow-400"
-                      : "rounded-full bg-red-600/20 px-3 py-1 text-red-400"
-                  }
-                >
-                  {s.status}
+              <td className="px-5 py-4 text-[#d2dce5]">{submission.language}</td>
+              <td className="px-5 py-4">
+                <span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusClasses(submission.status)}`}>
+                  {submission.status}
                 </span>
               </td>
-              <td className="px-4 py-2">{new Date(s.createdAt).toLocaleString()}</td>
+              <td className="px-5 py-4 text-[#9aabb9]">
+                {new Date(submission.createdAt).toLocaleString()}
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
     </div>
   );
+}
+
+function statusClasses(status) {
+  if (status === "Accepted") return "bg-emerald-500/15 text-emerald-200";
+  if (status.includes("Wrong")) return "bg-amber-500/15 text-amber-200";
+  return "bg-rose-500/15 text-rose-200";
 }

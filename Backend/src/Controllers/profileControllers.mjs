@@ -37,6 +37,58 @@ export const getMyProfile = async (req, res) => {
   }
 };
 
+export const getLeaderboard = async (_req, res) => {
+  try {
+    const users = await User.find()
+      .select(
+        "userName profilePicture institution location problemsSolved totalSubmissions acceptedSubmissions"
+      )
+      .lean();
+
+    const leaderboard = users
+      .map((user) => {
+        const solved = Array.isArray(user.problemsSolved) ? user.problemsSolved.length : 0;
+        const totalSubmissions = user.totalSubmissions ?? 0;
+        const acceptedSubmissions = user.acceptedSubmissions ?? 0;
+        const acceptanceRate = totalSubmissions
+          ? Number(((acceptedSubmissions / totalSubmissions) * 100).toFixed(1))
+          : 0;
+
+        return {
+          rank: 0,
+          _id: user._id,
+          userName: user.userName,
+          profilePicture: user.profilePicture,
+          institution: user.institution,
+          location: user.location,
+          solved,
+          totalSubmissions,
+          acceptedSubmissions,
+          acceptanceRate,
+        };
+      })
+      .sort((a, b) => {
+        if (b.solved !== a.solved) return b.solved - a.solved;
+        if (b.acceptedSubmissions !== a.acceptedSubmissions) {
+          return b.acceptedSubmissions - a.acceptedSubmissions;
+        }
+        if (a.totalSubmissions !== b.totalSubmissions) {
+          return a.totalSubmissions - b.totalSubmissions;
+        }
+        return a.userName.localeCompare(b.userName);
+      })
+      .map((user, index) => ({
+        ...user,
+        rank: index + 1,
+      }));
+
+    res.status(200).json({ leaderboard });
+  } catch (error) {
+    console.error("Error fetching leaderboard:", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 export const editProfile = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {

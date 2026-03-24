@@ -1,21 +1,22 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import axios from "axios";
 import mesh from "../assets/mesh.png";
+import { BACKEND_URL } from "../config/urls.js";
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const [formFields, setFormFields] = useState({ email: "", password: "", role: "" });
+  const [formFields, setFormFields] = useState({ email: "", password: "" });
   const [submit, setSubmit] = useState(false);
   const [formError, setFormError] = useState("");
   const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (!submit) return;
     setHasSubmitted(true);
-    const { email, password, role } = formFields;
-    if (!email || !password || !role) {
+    const { email, password } = formFields;
+    if (!email || !password) {
       setFormError("Please fill all the required fields.");
       setSubmit(false);
       return;
@@ -23,111 +24,98 @@ export default function LoginPage() {
     (async () => {
       try {
         await axios.post(
-          `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
-          { ...formFields },
+          `${BACKEND_URL}/api/auth/login`,
+          { ...formFields, role: "user" },
           { withCredentials: true }
         );
         setFormError("");
         navigate("/");
       } catch (err) {
         console.error("Login error", err.response?.data || err.message);
-        setFormError("Login failed.");
+        const apiErrors = err?.response?.data?.errors;
+        if (Array.isArray(apiErrors) && apiErrors.length) {
+          setFormError(apiErrors[0].msg);
+        } else {
+          setFormError("Login failed.");
+        }
       }
       setSubmit(false);
     })();
   }, [submit, formFields, navigate]);
 
   return (
-    <div className="min-h-screen bg-white text-black flex flex-col overflow-hidden relative">
-
-      <motion.img
+    <main className="relative min-h-screen overflow-hidden bg-[#0a0f14] text-white">
+      <img
         src={mesh}
-        alt="mesh-bg"
-        initial={{ opacity: 0.4, scale: 0.95, x: 0, y: 0 }}
-        animate={{
-          opacity: [0.4, 0.8, 0.4],
-          scale: 1,
-          x: [0, 30, 0, -30, 0],
-          y: [0, -30, 0, 30, 0],
-        }}
-        transition={{
-          duration: 40,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-        className="absolute left-[-200px] top-[-150px] w-[1200px] pointer-events-none select-none z-0" />
+        alt="Code Bharat background"
+        className="absolute inset-0 h-full w-full object-cover object-center"
+      />
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(6,10,14,0.72)_0%,rgba(6,10,14,0.46)_45%,rgba(6,10,14,0.38)_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_32%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.08),transparent_28%)]" />
 
-      <main className="flex-grow grid md:grid-cols-2 place-items-center relative z-10 px-6 py-12">
-        <div className="hidden md:block space-y-4 pr-8">
-          <h1 className="text-5xl font-extrabold leading-tight">
-            Welcome&nbsp;Back.
-          </h1>
-          <p className="text-lg text-gray-700">
-            Practice. Compete. Grow.<br />Login to enter the arena.
+      <section className="relative mx-auto flex min-h-screen max-w-7xl items-center justify-end px-4 py-10 sm:px-6 lg:px-8">
+        <div className="w-full max-w-md rounded-[30px] border border-white/15 bg-black/25 p-7 backdrop-blur-md sm:p-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.32em] text-white/70">
+            Login
           </p>
-        </div>
+          <h1 className="mt-4 text-3xl font-semibold text-white">Welcome back</h1>
+          <p className="mt-2 text-sm text-white/75">Continue solving.</p>
 
-        <div className="w-full max-w-md bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-10 border border-gray-200">
-          <h2 className="text-2xl font-semibold mb-6 text-center">Log in</h2>
-
-          <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+          <form className="mt-8 space-y-5" onSubmit={(e) => e.preventDefault()}>
             <div>
-              <label htmlFor="email" className="block mb-1 text-sm font-medium">Email</label>
+              <label htmlFor="email" className="mb-2 block text-sm font-medium text-white/85">
+                Email
+              </label>
               <input
                 id="email"
                 name="email"
                 type="email"
-                className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                className="w-full rounded-2xl border border-white/15 bg-black/25 px-4 py-3 text-white outline-none placeholder:text-white/35"
                 onChange={(e) => setFormFields((p) => ({ ...p, email: e.target.value }))}
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block mb-1 text-sm font-medium">Password</label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                onChange={(e) => setFormFields((p) => ({ ...p, password: e.target.value }))}
-              />
+              <label htmlFor="password" className="mb-2 block text-sm font-medium text-white/85">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  className="w-full rounded-2xl border border-white/15 bg-black/25 px-4 py-3 pr-16 text-white outline-none placeholder:text-white/35"
+                  onChange={(e) => setFormFields((p) => ({ ...p, password: e.target.value }))}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((current) => !current)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-white/70 transition hover:text-white"
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
             </div>
 
-            <div>
-              <label htmlFor="role" className="block mb-1 text-sm font-medium">Role</label>
-              <select
-                id="role"
-                name="role"
-                className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900"
-                onChange={(e) =>
-                  setFormFields((p) => ({ ...p, role: e.target.value }))
-                }
-              >
-                <option value="">Select role</option>
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div>
-
-            {hasSubmitted && formError && <p className="text-red-600 text-sm">{formError}</p>}
+            {hasSubmitted && formError && <p className="text-sm text-rose-200">{formError}</p>}
 
             <button
               type="submit"
               onClick={() => setSubmit(true)}
-              className="w-full mt-2 py-2 rounded-md bg-black text-white hover:bg-gray-900 transition-colors font-medium"
+              className="w-full rounded-full bg-white px-6 py-3 text-sm font-medium text-[#10212d] transition hover:bg-[#e7eef5]"
             >
-              Submit
+              Sign In
             </button>
           </form>
 
-          <p className="mt-5 text-center text-sm text-gray-600">
-            Not a user?&nbsp;
-            <Link to="/register" className="text-black underline-offset-4 hover:underline">
-              Sign up
+          <p className="mt-6 text-sm text-white/72">
+            New here?{" "}
+            <Link to="/register" className="font-medium text-white">
+              Create account
             </Link>
           </p>
         </div>
-      </main>
-    </div>
+      </section>
+    </main>
   );
 }

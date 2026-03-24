@@ -14,6 +14,12 @@ import ProblemSetPage, { problemSetLoader } from "./Pages/ProblemSetPage.jsx";
 import ProblemPage, { ProblemLoader } from "./Pages/ProblemPage.jsx";
 import AdminAddProblemPage from "./Pages/Admin/AdminAddProblemPage.jsx";
 import RequireAdmin from "./Middleware/RequireAdmin.jsx";
+import AdminLayout from "./Layouts/AdminLayout.jsx";
+import AdminAuthLayout from "./Layouts/AdminAuthLayout.jsx";
+import AdminDashboardPage from "./Pages/Admin/AdminDashboardPage.jsx";
+import AdminProblemsPage from "./Pages/Admin/AdminProblemsPage.jsx";
+import AdminLoginPage from "./Pages/Admin/AdminLoginPage.jsx";
+import AdminRegisterPage from "./Pages/Admin/AdminRegisterPage.jsx";
 
 function App() {
   const router = createBrowserRouter(
@@ -26,9 +32,6 @@ function App() {
           <Route path="leaderboard" element={<LeaderboardPage />} />
           <Route path="explore" element={<ExplorePage />} />
 
-          <Route element={<RequireAdmin />}>
-            <Route path="admin/add-problem" element={<AdminAddProblemPage />} />
-          </Route>
         </Route>
 
         <Route element={<ProblemLayout />}>
@@ -47,6 +50,19 @@ function App() {
         <Route element={<LoginLayout />}>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+        </Route>
+
+        <Route element={<AdminAuthLayout />}>
+          <Route path="/admin/login" element={<AdminLoginPage />} />
+          <Route path="/admin/register" element={<AdminRegisterPage />} />
+        </Route>
+
+        <Route path="/admin" element={<RequireAdmin />}>
+          <Route element={<AdminLayout />}>
+            <Route index element={<AdminDashboardPage />} />
+            <Route path="problems" element={<AdminProblemsPage />} />
+            <Route path="problems/new" element={<AdminAddProblemPage />} />
+          </Route>
         </Route>
       </>
     )

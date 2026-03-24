@@ -2,9 +2,16 @@ import { Router } from "express";
 import requireAuth from "../Middleware/requireAuth.mjs";
 import { checkSchema } from "express-validator";
 import { profileValidatingSchema } from "../Utils/Validating Schemas/profileValidatingSchema.mjs";
-import { editProfile, getMyProfile, userProfile } from "../Controllers/profileControllers.mjs";
+import {
+  editProfile,
+  getLeaderboard,
+  getMyProfile,
+  userProfile
+} from "../Controllers/profileControllers.mjs";
 
 const router = Router();
+
+router.get("/api/leaderboard", getLeaderboard);
 
 router.get("/api/user/:id" , userProfile);
 

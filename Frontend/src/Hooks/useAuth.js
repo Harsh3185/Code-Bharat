@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { BACKEND_URL } from '../config/urls.js';
 
 export default function useAuth() {
   const [user, setUser] = useState(null);
@@ -8,9 +9,8 @@ export default function useAuth() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await axios.post(
-          `${import.meta.env.VITE_BACKEND_URL}/api/auth/me`,
-          {},
+        const res = await axios.get(
+          `${BACKEND_URL}/api/auth/me`,
           { withCredentials: true }
         );
         setUser(res.data.user);

@@ -14,12 +14,25 @@ const app = express();
 
 DBConnection();
 
+const defaultAllowedOrigins = [
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "https://code-bharat-one.vercel.app",
+  "https://jatsamajdirectory.com",
+];
+
+const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS
+  ? process.env.CORS_ALLOWED_ORIGINS.split(",").map((origin) => origin.trim()).filter(Boolean)
+  : defaultAllowedOrigins;
+
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://code-bharat-one.vercel.app",
-    "https://jatsamajdirectory.com" 
-  ],
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Origin not allowed by CORS"));
+  },
   credentials: true
 }));
 

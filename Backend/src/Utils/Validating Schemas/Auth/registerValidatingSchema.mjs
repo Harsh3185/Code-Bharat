@@ -43,10 +43,14 @@ export const registerValidatingSchema = {
         },
         isLength: {
             options: {
-                min: 4,
-                max: 16,
+                min: 8,
+                max: 32,
             },
-            errorMessage: "Password must be 4-16 characters long",
+            errorMessage: "Password must be 8-32 characters long",
+        },
+        matches: {
+            options: [/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/],
+            errorMessage: "Password must include uppercase, lowercase, number, and special character",
         },
     },
 
@@ -56,5 +60,26 @@ export const registerValidatingSchema = {
             options: [['admin', 'user']],
             errorMessage: "Role must be 'admin' or 'user'",
         },
-    }
+    },
+
+    adminSecret: {
+        optional: true,
+        custom: {
+            options: (value, { req }) => {
+                const role = req.body?.role?.toLowerCase();
+
+                if (role !== "admin") return true;
+
+                if (!value) {
+                    throw new Error("Admin secret is required for admin registration");
+                }
+
+                if (value !== process.env.ADMIN_SECRET) {
+                    throw new Error("Invalid admin secret");
+                }
+
+                return true;
+            },
+        },
+    },
 };

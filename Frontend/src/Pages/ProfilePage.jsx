@@ -1,15 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logoutThunk } from "../Store/Features/Auth/authThunks.js";
 import SubmissionTable from "../Components/SubmissionTable.jsx";
+import MeshPageShell from "../Components/MeshPageShell.jsx";
+import { BACKEND_URL } from "../config/urls.js";
 
 function Stat({ label, value }) {
   return (
-    <div className="bg-[#1a1a1a] rounded-xl p-4 text-center shadow transition-all hover:-translate-y-1 hover:shadow-purple-600/40">
-      <p className="text-3xl font-extrabold text-white">{value}</p>
-      <p className="mt-1 text-xs font-semibold uppercase tracking-widest text-gray-400">{label}</p>
+    <div className="rounded-2xl border border-white/12 bg-black/20 px-4 py-4 backdrop-blur-sm">
+      <p className="text-2xl font-semibold text-white">{value}</p>
+      <p className="mt-1 text-xs uppercase tracking-[0.2em] text-white/55">{label}</p>
     </div>
   );
 }
@@ -20,24 +22,22 @@ export default function ProfilePage() {
   const d = useDispatch();
   const n = useNavigate();
 
-  const h = () => {
-    d(logoutThunk());
-    n("/login");
+  const logout = async () => {
+    await d(logoutThunk());
+    n("/login", { replace: true });
   };
 
   useEffect(() => {
     (async () => {
       try {
-        const pr = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/profile`,
-          { withCredentials: true }
-        );
+        const pr = await axios.get(`${BACKEND_URL}/api/profile`, {
+          withCredentials: true,
+        });
         su(pr.data.user);
 
-        const sr = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/submissions`,
-          { withCredentials: true }
-        );
+        const sr = await axios.get(`${BACKEND_URL}/api/submissions`, {
+          withCredentials: true,
+        });
         ss(sr.data.submissions);
       } catch {
         n("/login");
@@ -45,64 +45,119 @@ export default function ProfilePage() {
     })();
   }, [n]);
 
-  if (!u) return <div className="p-10 text-gray-300">Loading…</div>;
+  const acceptanceRate = useMemo(() => {
+    if (!u) return "0.0";
+    return ((u.acceptedSubmissions / Math.max(u.totalSubmissions, 1)) * 100).toFixed(1);
+  }, [u]);
+
+  if (!u) {
+    return (
+      <MeshPageShell contentClassName="flex min-h-screen items-center justify-center">
+        <div className="rounded-3xl border border-white/15 bg-black/25 px-6 py-5 text-white backdrop-blur-md">
+          Loading...
+        </div>
+      </MeshPageShell>
+    );
+  }
 
   return (
-    <main className="min-h-screen bg-[#0f0f0f] px-4 py-10 text-gray-200">
-      <div className="mx-auto flex max-w-5xl flex-col space-y-10">
-        <div className="flex flex-col items-center justify-between gap-6 rounded-3xl bg-[#151515] p-8 shadow-lg md:flex-row md:gap-0">
-          <div className="flex items-center gap-6">
-            <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 text-4xl font-extrabold">
-              {u.userName[0].toUpperCase()}
+    <MeshPageShell>
+      <div className="grid gap-6 xl:grid-cols-[1.35fr_0.65fr]">
+        <section className="rounded-[32px] border border-white/15 bg-black/25 p-6 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-md sm:p-8">
+          <div className="flex flex-col gap-6 border-b border-white/10 pb-6 lg:flex-row lg:items-end lg:justify-between">
+            <div className="flex items-center gap-5">
+              <div className="flex h-24 w-24 items-center justify-center rounded-full border border-white/15 bg-white/10 text-4xl font-semibold text-white">
+                {u.userName[0].toUpperCase()}
+              </div>
+
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/60">
+                  Profile
+                </p>
+                <h1 className="mt-3 text-3xl font-semibold text-white sm:text-4xl">
+                  {u.userName}
+                </h1>
+                <p className="mt-2 text-sm text-white/72">{u.email}</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-3xl font-bold text-white">{u.userName}</h1>
-              <p className="text-sm text-gray-400">{u.email}</p>
+
+            <button
+              onClick={logout}
+              className="rounded-full border border-rose-400/25 bg-rose-400/10 px-5 py-2.5 text-sm font-medium text-rose-100 transition hover:bg-rose-400/15"
+            >
+              Logout
+            </button>
+          </div>
+
+          <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <Stat label="Solved" value={u.problemsSolved.length} />
+            <Stat label="Submissions" value={u.totalSubmissions} />
+            <Stat label="Accepted" value={u.acceptedSubmissions} />
+            <Stat label="Acceptance" value={`${acceptanceRate}%`} />
+          </div>
+
+          <div className="mt-6 rounded-[28px] border border-white/12 bg-white/[0.05] p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/55">
+              About
+            </p>
+            <p className="mt-4 whitespace-pre-wrap text-sm leading-7 text-white/78">
+              {u.bio || "No bio added yet."}
+            </p>
+          </div>
+        </section>
+
+        <aside className="space-y-6">
+          <Panel title="Profile Snapshot">
+            <InfoRow label="Institution" value={u.institution || "-"} />
+            <InfoRow label="Location" value={u.location || "-"} />
+            <InfoRow label="Status" value={u.role || "User"} />
+          </Panel>
+
+          <Panel title="Current Focus">
+            <div className="rounded-2xl border border-white/12 bg-black/20 px-4 py-4 backdrop-blur-sm">
+              <p className="text-sm font-medium text-white">Keep solving consistently</p>
+              <p className="mt-2 text-sm leading-6 text-white/70">
+                Your recent submissions and acceptance rate are tracked below.
+              </p>
             </div>
-          </div>
-          <button
-            onClick={h}
-            className="rounded-full bg-red-600 px-6 py-2 text-sm font-semibold transition-colors hover:bg-red-700"
-          >
-            Logout
-          </button>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          <Stat label="Solved" value={u.problemsSolved.length} />
-          <Stat label="Submissions" value={u.totalSubmissions} />
-          <Stat label="Accepted" value={u.acceptedSubmissions} />
-          <Stat
-            label="Acceptance %"
-            value={((u.acceptedSubmissions / Math.max(u.totalSubmissions, 1)) * 100).toFixed(1)}
-          />
-        </div>
-
-        <div className="rounded-3xl bg-[#151515] p-6 shadow-lg">
-          <h2 className="mb-4 text-xl font-semibold text-white">About</h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <p>
-              <span className="font-semibold text-gray-400">Institution:</span>{" "}
-              {u.institution || "\u2014"}
-            </p>
-            <p>
-              <span className="font-semibold text-gray-400">Location:</span>{" "}
-              {u.location || "\u2014"}
-            </p>
-            <p className="sm:col-span-2">
-              <span className="font-semibold text-gray-400">Bio:</span>{" "}
-              {u.bio || "\u2014"}
-            </p>
-          </div>
-        </div>
-
-        {!!s.length && (
-          <div className="rounded-3xl bg-[#151515] p-6 shadow-lg space-y-4">
-            <h2 className="text-xl font-semibold text-white">Submission History</h2>
-            <SubmissionTable submissions={s} />
-          </div>
-        )}
+          </Panel>
+        </aside>
       </div>
-    </main>
+
+      <section className="mt-6 rounded-[32px] border border-white/15 bg-black/25 p-6 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-md">
+        <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-lg font-semibold text-white">Submission History</h2>
+            <p className="text-sm text-white/68">Recent work across the platform.</p>
+          </div>
+        </div>
+
+        {!!s.length ? (
+          <SubmissionTable submissions={s} />
+        ) : (
+          <p className="rounded-2xl border border-dashed border-white/15 bg-black/20 px-4 py-8 text-center text-sm text-white/65">
+            No submissions yet.
+          </p>
+        )}
+      </section>
+    </MeshPageShell>
+  );
+}
+
+function Panel({ title, children }) {
+  return (
+    <div className="rounded-[28px] border border-white/15 bg-black/25 p-5 backdrop-blur-md">
+      <h2 className="text-sm font-semibold uppercase tracking-[0.24em] text-white/58">{title}</h2>
+      <div className="mt-4 space-y-3">{children}</div>
+    </div>
+  );
+}
+
+function InfoRow({ label, value }) {
+  return (
+    <div className="flex items-center justify-between rounded-2xl border border-white/12 bg-black/20 px-4 py-4 backdrop-blur-sm">
+      <span className="text-sm text-white/72">{label}</span>
+      <span className="text-sm font-medium text-white">{value}</span>
+    </div>
   );
 }

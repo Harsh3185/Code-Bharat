@@ -42,6 +42,27 @@ export const loginValidatingSchema = {
             },
         },
     },
+
+    role: {
+        in: ['body'],
+        optional: true,
+        isIn: {
+            options: [['admin', 'user']],
+            errorMessage: "Role must be 'admin' or 'user'",
+        },
+        custom: {
+            options: (value, { req }) => {
+                const user = req._foundUser;
+                if (!value || !user) return true;
+
+                if (user.role?.toLowerCase() !== value.toLowerCase()) {
+                    throw new Error(`This account is not registered as ${value}`);
+                }
+
+                return true;
+            },
+        },
+    },
 };
 
 export default loginValidatingSchema

@@ -28,10 +28,12 @@ const authSlice = createSlice({
 
       .addCase(logoutThunk.fulfilled, (state) => {
         state.user = null;
+        state.loading = false;
       })
 
       .addCase(logoutThunk.rejected, (state) => {
         state.user = null;
+        state.loading = false;
       });
   },
 });

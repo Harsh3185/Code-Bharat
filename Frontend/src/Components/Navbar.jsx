@@ -10,6 +10,7 @@ export default function Navbar() {
   const { pathname } = useLocation();
   const dispatch = useDispatch();
   const { user } = useSelector((s) => s.auth);
+  const isAdmin = user?.role?.toLowerCase() === 'admin';
 
   useEffect(() => {
     if (!user) dispatch(fetchUser());
@@ -54,11 +55,21 @@ export default function Navbar() {
             ))}
 
             {user ? (
-              <Link to="/profile">
-                <div className="ml-4 w-10 h-10 flex items-center justify-center rounded-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg uppercase">
-                  {user.userName?.[0] ?? 'U'}
-                </div>
-              </Link>
+              <>
+                {isAdmin && (
+                  <Link
+                    to="/admin"
+                    className="rounded-full border border-white/10 px-4 py-2 text-gray-200 transition hover:border-white/20 hover:bg-white/5 hover:text-white"
+                  >
+                    Admin
+                  </Link>
+                )}
+                <Link to="/profile">
+                  <div className="ml-1 flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-lg font-bold uppercase text-white hover:bg-blue-700">
+                    {user.userName?.[0] ?? 'U'}
+                  </div>
+                </Link>
+              </>
             ) : (
               <Link
                 to="/login"
@@ -110,11 +121,22 @@ export default function Navbar() {
             ))}
 
             {user ? (
-              <Link to="/profile" onClick={() => setOpen(false)}>
-                <div className="ml-4 mt-2 w-10 h-10 flex items-center justify-center rounded-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg uppercase">
-                  {user.userName?.[0] ?? 'U'}
-                </div>
-              </Link>
+              <>
+                {isAdmin && (
+                  <Link
+                    to="/admin"
+                    onClick={() => setOpen(false)}
+                    className="mx-4 rounded-lg border border-white/10 px-4 py-2 text-gray-200 transition hover:bg-white/10"
+                  >
+                    Admin Console
+                  </Link>
+                )}
+                <Link to="/profile" onClick={() => setOpen(false)}>
+                  <div className="ml-4 mt-2 flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-lg font-bold uppercase text-white hover:bg-blue-700">
+                    {user.userName?.[0] ?? 'U'}
+                  </div>
+                </Link>
+              </>
             ) : (
               <Link
                 to="/login"

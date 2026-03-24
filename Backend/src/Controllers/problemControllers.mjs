@@ -2,6 +2,7 @@ import { matchedData, validationResult } from "express-validator";
 import { Problem } from "../Models/Problem.mjs";
 import mongoose from "mongoose";
 import { TestCase } from "../Models/Testcase.mjs";
+import { Submission } from "../Models/Submission.mjs";
 
 
 export const getProblem = async (req, res) => {
@@ -73,8 +74,9 @@ export const deleteProblem = async (req, res) => {
         }
 
         await TestCase.deleteMany({ problemId: Id });
+        await Submission.deleteMany({ problemId: Id });
 
-        res.status(200).json({ message: "Problem and associated test cases deleted successfully" });
+        res.status(200).json({ message: "Problem and related data deleted successfully" });
     } catch (err) {
         console.error("Delete Problem Error:", err);
         res.status(500).json({ message: "Internal server error" });
