@@ -222,6 +222,7 @@ function ProblemPage() {
           </article>
 
           <Split
+            key={review ? "workspace-with-review" : "workspace-no-review"}
             className="flex flex-col gap-0"
             direction="vertical"
             gutterSize={10}
