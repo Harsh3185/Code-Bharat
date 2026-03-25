@@ -10,8 +10,24 @@ if (!fs.existsSync(dirCodes)) {
 
 const generateFile = (format, content) => {
   const jobID = uuid();
-  const filename = format === "java" ? "Main.java" : `${jobID}.${format}`;
-  const filePath = path.join(dirCodes, filename);
+  const extensionMap = {
+    c: "c",
+    cpp: "cpp",
+    java: "java",
+    javascript: "js",
+    python: "py",
+    go: "go",
+  };
+  const extension = extensionMap[format] || format;
+  const javaDir = path.join(dirCodes, jobID);
+  const filePath = format === "java"
+    ? path.join(javaDir, "Main.java")
+    : path.join(dirCodes, `${jobID}.${extension}`);
+
+  if (format === "java" && !fs.existsSync(javaDir)) {
+    fs.mkdirSync(javaDir, { recursive: true });
+  }
+
   fs.writeFileSync(filePath, content);
   return filePath;
 };

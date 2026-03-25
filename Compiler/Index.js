@@ -9,6 +9,7 @@ const { executePython } = require('./executePython');
 const { executeJs } = require('./executeJs');
 const { executeGo } = require('./executeGo');
 const { executeC } = require('./executeC.js');
+const { executeJava } = require('./executeJava');
 
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
@@ -20,6 +21,21 @@ app.get("/", (req, res) => {
 
 app.post("/run", async (req, res) => {
     const { language = 'cpp', code, input = '' } = req.body;
+    const normalizedLanguage = String(language).trim().toLowerCase();
+    const languageAliases = {
+        "c++": "cpp",
+        cpp: "cpp",
+        c: "c",
+        py: "python",
+        python: "python",
+        js: "javascript",
+        javascript: "javascript",
+        node: "javascript",
+        go: "go",
+        golang: "go",
+        java: "java"
+    };
+    const selectedLanguage = languageAliases[normalizedLanguage];
 
     if (code === undefined || code.trim() === '') {
         return res.status(400).json({
@@ -29,22 +45,28 @@ app.post("/run", async (req, res) => {
     }
 
     try {
-        const filePath = await generateFile(language, code);
+        if (!selectedLanguage) {
+            throw new Error(`Unsupported language: ${language}`);
+        }
+
+        const filePath = await generateFile(selectedLanguage, code);
 
         const inputPath = await generateInputFile(input);
 
         let output;
 
-        if (language === "cpp") {
+        if (selectedLanguage === "cpp") {
             output = await executeCpp(filePath, inputPath);
-        } else if (language === "c") {
+        } else if (selectedLanguage === "c") {
             output = await executeC(filePath, inputPath);
-        } else if (language === "python") {
+        } else if (selectedLanguage === "python") {
             output = await executePython(filePath, inputPath);
-        } else if (language === "javascript") {
+        } else if (selectedLanguage === "javascript") {
             output = await executeJs(filePath, inputPath);
-        } else if (language === "go") {
+        } else if (selectedLanguage === "go") {
             output = await executeGo(filePath, inputPath);
+        } else if (selectedLanguage === "java") {
+            output = await executeJava(filePath, inputPath);
         } else {
             throw new Error("Unsupported language");
         }
