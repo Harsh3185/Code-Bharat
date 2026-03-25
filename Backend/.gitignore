@@ -1,3 +1,4 @@
+# Backend ignore rules
 node_modules
 .env
 logs/
