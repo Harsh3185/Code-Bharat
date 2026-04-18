@@ -10,7 +10,7 @@ const testCaseSchema = new mongoose.Schema({
     type: String, required: true
   },
   output: {
-    type: String, required: true
+    type: String, default: ""
   }
 });
 

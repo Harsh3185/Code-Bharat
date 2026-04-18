@@ -7,7 +7,7 @@ const exampleSchema = new mongoose.Schema({
     },
     output: {
         type: String,
-        required: true,
+        default: "",
     },
     explanation: {
         type: String,

@@ -22,9 +22,6 @@ export const testCaseValidatingSchema = {
   "testCases.*.output": {
     isString: {
       errorMessage: "Each output must be a string"
-    },
-    notEmpty: {
-      errorMessage: "Output is required"
     }
   }
 
