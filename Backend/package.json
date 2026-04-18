@@ -9,7 +9,6 @@
   "scripts": {
     "dev": "node Index.mjs",
     "start": "node Index.mjs",
-    "seed:problems": "node scripts/seedProblems.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
