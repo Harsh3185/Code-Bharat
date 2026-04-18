@@ -1,13 +1,14 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import cookieParser from 'cookie-parser';
-import DBConnection from './src/Database/Database.mjs';
-import authRouter from './src/Routes/authRoutes.mjs';
-import problemRouter from './src/Routes/problemRoutes.mjs';
-import testCaseRouter from './src/Routes/testCaseRoutes.mjs';
-import profileRouter from './src/Routes/profileRoutes.mjs';
-import submissionRouter from './src/Routes/submissionRoutes.mjs';
+import express from "express";
+import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 import cors from "cors";
+
+import DBConnection from "./src/Database/Database.mjs";
+import authRouter from "./src/Routes/authRoutes.mjs";
+import problemRouter from "./src/Routes/problemRoutes.mjs";
+import testCaseRouter from "./src/Routes/testCaseRoutes.mjs";
+import profileRouter from "./src/Routes/profileRoutes.mjs";
+import submissionRouter from "./src/Routes/submissionRoutes.mjs";
 
 dotenv.config();
 const app = express();
@@ -17,6 +18,7 @@ DBConnection();
 const defaultAllowedOrigins = [
   "http://localhost:5173",
   "http://127.0.0.1:5173",
+  "https://code-bharat-frontend.onrender.com",
   "https://code-bharat-one.vercel.app",
   "https://jatsamajdirectory.com",
 ];
@@ -31,7 +33,8 @@ const isAllowedOrigin = (origin) => {
   }
 
   try {
-    return new URL(origin).hostname.endsWith(".onrender.com");
+    const { hostname } = new URL(origin);
+    return hostname.endsWith(".onrender.com") || hostname.endsWith(".vercel.app");
   } catch {
     return false;
   }
@@ -55,18 +58,18 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(authRouter);
 app.use(problemRouter);
 app.use(testCaseRouter);
-app.use(profileRouter); 
-app.use(submissionRouter); 
+app.use(profileRouter);
+app.use(submissionRouter);
 
 app.get("/", (req, res) => {
   res.json({ message: "Code Bharat Backend API is live" });
 });
 
 app.use((req, res) => {
-  res.status(404).json({ message: 'Route not found' });
+  res.status(404).json({ message: "Route not found" });
 });
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

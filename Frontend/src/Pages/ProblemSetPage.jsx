@@ -1,7 +1,5 @@
-import axios from "axios";
 import { useMemo, useState } from "react";
 import { Link, useLoaderData } from "react-router-dom";
-import { BACKEND_URL } from "../config/urls.js";
 import MeshPageShell from "../Components/MeshPageShell.jsx";
 
 function ProblemSetPage() {
@@ -179,10 +177,3 @@ function Metric({ label, value }) {
 }
 
 export default ProblemSetPage;
-
-export const problemSetLoader = async () => {
-  const res = await axios.get(`${BACKEND_URL}/api/problems`, {
-    withCredentials: true,
-  });
-  return { problems: res.data.problems };
-};

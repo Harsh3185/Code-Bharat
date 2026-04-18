@@ -132,7 +132,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {!!s.length ? (
+        {s.length > 0 ? (
           <SubmissionTable submissions={s} />
         ) : (
           <p className="rounded-2xl border border-dashed border-white/15 bg-black/20 px-4 py-8 text-center text-sm text-white/65">

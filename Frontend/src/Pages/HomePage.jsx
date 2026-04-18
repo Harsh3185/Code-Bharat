@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import mesh from "../assets/mesh.png";
 
@@ -15,7 +15,7 @@ export default function HomePage() {
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#0a0f14] text-white">
-      <motion.img
+      <Motion.img
         src={mesh}
         alt="Code Bharat background"
         initial={{ scale: 1.04, opacity: 0.78 }}
@@ -32,34 +32,34 @@ export default function HomePage() {
 
       <section className="relative mx-auto flex min-h-screen max-w-7xl items-center px-4 py-10 sm:px-6 lg:px-8">
         <div className="max-w-3xl">
-          <motion.p
+          <Motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="text-xs font-semibold uppercase tracking-[0.34em] text-white/70"
           >
             Code Bharat
-          </motion.p>
+          </Motion.p>
 
-          <motion.h1
+          <Motion.h1
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.06 }}
             className="mt-4 text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl"
           >
             Practice coding in one serious workspace.
-          </motion.h1>
+          </Motion.h1>
 
-          <motion.p
+          <Motion.p
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.14 }}
             className="mt-5 max-w-xl text-base leading-7 text-white/80 sm:text-lg"
           >
             Read. Code. Run. Submit.
-          </motion.p>
+          </Motion.p>
 
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65, delay: 0.22 }}
@@ -87,9 +87,9 @@ export default function HomePage() {
                 Create Account
               </Link>
             )}
-          </motion.div>
+          </Motion.div>
 
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.3 }}
@@ -104,7 +104,7 @@ export default function HomePage() {
                 <p className="text-lg font-semibold text-white">{item.title}</p>
               </Link>
             ))}
-          </motion.div>
+          </Motion.div>
         </div>
       </section>
     </main>
