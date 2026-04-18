@@ -51,7 +51,9 @@ export const addProblem = async (req, res) => {
 
 export const getProblemSet = async (req, res) => {
     try {
-        const problems = await Problem.find().select('problemNumber title acceptanceRate');
+        const problems = await Problem.find()
+            .select('problemNumber title acceptanceRate')
+            .sort({ problemNumber: 1 });
 
         res.status(200).json({ problems });
     } catch (error) {
